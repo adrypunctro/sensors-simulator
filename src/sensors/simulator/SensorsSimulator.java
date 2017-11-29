@@ -8,11 +8,15 @@ package sensors.simulator;
 import gui.SimulatorFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,42 +42,62 @@ public class SensorsSimulator {
             }
         });
         
+        new Thread(){
+            @Override
+            public void run(){
+
+                while(true) {
+                    System.out.println("Try to start signals stream...");
+                    
+                    try {
+                        Socket s = new Socket("localhost", 60010);
+                        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+                        System.out.println("Connected to signals stream.");
+                        gui.getBtn1().addActionListener(new ActionListener()
+                        {
+                            @Override
+                            public void actionPerformed(ActionEvent e)
+                            {
+                                sentMsg(out, "Btn1");
+                            }
+                        });
+                        break;
+
+                    } catch (UnknownHostException e) {
+
+                    } catch (IOException e) {
+ 
+                    }
+                    
+                    try {Thread.sleep(1000);} catch (InterruptedException ex) {}
+                }
+            }
+        }.start();
         
-        try {
-            Socket s = new Socket("localhost", 60010);
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+        // Connect to log source
+        javax.swing.JTextArea logField = gui.getLogPannel();
+        while(true)
+        {
+            System.out.println("Try to connect to LOG stream...");
+            ServerSocket ss;
+            try {
+                ss = new ServerSocket(60011);
 
-            gui.getBtn1().addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    sentMsg(out, "Btn1");
-                }
-            });
-            
-            gui.getBtn2().addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    sentMsg(out, "Btn2");
-                }
-            });
-            
-            gui.getBtn3().addActionListener(new ActionListener()
-            {
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    sentMsg(out, "Btn3");
-                }
-            });
+                Socket s = ss.accept();
 
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+                BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                String line = null;
+                System.out.println("Connected to LOG stream.");
+                while ((line = in.readLine()) != null) {
+                    String currentText = logField.getText();
+                    String newTextToAppend = currentText + "\n" + line;
+                    logField.setText(newTextToAppend);
+                }
+            } catch (IOException e) {
+                
+            }
+ 
+            try {Thread.sleep(1000);} catch (InterruptedException ex) {}
         }
     }
     
