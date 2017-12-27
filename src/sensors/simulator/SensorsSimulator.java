@@ -44,7 +44,7 @@ public class SensorsSimulator {
         
         new Thread(){
             @Override
-            public void run(){
+            public void run() {
 
                 while(true) {
                     System.out.println("Try to start signals stream...");
