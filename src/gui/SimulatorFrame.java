@@ -6,8 +6,10 @@
 package gui;
 
 import java.awt.Color;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 
 /**
@@ -49,6 +51,21 @@ public class SimulatorFrame extends javax.swing.JFrame {
         {
             systemPanelApplicationValue.setForeground(Color.RED);
         }
+    }
+    
+    public JButton getCameraPanelUploadImageBtn()
+    {
+        return cameraPanelUploadImageBtn;
+    }
+    
+    public void setCameraPanelFilenameText(String text)
+    {
+        cameraPanelFilenameText.setText(text);
+    }
+    
+    public JPanel getCameraPanelRealCapture()
+    {
+        return cameraPanelRealCapture;
     }
     
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         

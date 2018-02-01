@@ -6,21 +6,33 @@
 package sensors.simulator;
 
 import gui.SimulatorFrame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.activation.MimetypesFileTypeMap;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -46,17 +58,84 @@ public class SensorsSimulator {
             }
         });
         
+        
+        gui.getCameraPanelUploadImageBtn().addActionListener(new ActionListener()
+        {
+            private final JFileChooser fc = new JFileChooser();
+            
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                try
+                {
+                    int x = fc.showOpenDialog(null);
+                    if (x == JFileChooser.APPROVE_OPTION)
+                    {
+                        File fileToBeSent = fc.getSelectedFile();
+                        String filepath = fileToBeSent.getAbsoluteFile().getPath();
+                        int ellipsis = 30;
+                        if (filepath.length()>ellipsis) {
+                            filepath = "..."+filepath.substring(filepath.length()-ellipsis, filepath.length());
+                        }
+                        gui.setCameraPanelFilenameText(filepath);
+                        
+                        String mimetype= new MimetypesFileTypeMap().getContentType(fileToBeSent);
+                        String type = mimetype.split("/")[0];
+                        if(type.equals("image"))
+                        {
+                            BufferedImage imagebuff = ImageIO.read(fileToBeSent);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            ImageIO.write( imagebuff, "jpg", baos );
+                            baos.flush();
+                            byte[] imageInByte = baos.toByteArray();
+                            baos.close();
+                            String strBuff = new String(imageInByte, StandardCharsets.UTF_8);
+                            
+                            // Send to app
+                            JSONObject jsonObj = new JSONObject();
+                            jsonObj.put("appId", 829);
+                                JSONObject dataObj = new JSONObject();
+                                dataObj.put("rawData", strBuff);
+                            jsonObj.put("data", dataObj);
+                            sentMsg(out, jsonObj.toJSONString());
+                            jsonObj.clear();
+                            
+                            // Update GUI
+                            JLabel label = new JLabel(new ImageIcon(imagebuff));
+                            gui.getCameraPanelRealCapture().add(label);
+                            gui.getCameraPanelRealCapture().repaint();
+                        }
+                        else 
+                        {
+                            System.out.println("It's NOT an image");
+                        }
+                    }
+                }
+                catch (Exception ex) {
+                    
+                }
+            }
+        });
+        
         gui.getTouchPanelSelect1().addItemListener(new ItemListener()
         {
             boolean continueTouch = false;
+            String touchPayload = null;
             
             @Override
             public void itemStateChanged(ItemEvent event)
             {
-               if (event.getStateChange() == ItemEvent.SELECTED)
-               {
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.put("appId", 1029);
+                    JSONObject dataObj = new JSONObject();
+                    dataObj.put("value", true);
+                jsonObj.put("data", dataObj);
+                touchPayload = jsonObj.toJSONString();
+
+                if (event.getStateChange() == ItemEvent.SELECTED)
+                {
                     String item = event.getItem().toString();
-                    
+
                     if (item.equals("Continue") && !continueTouch)
                     {
                         System.out.println("Start continous touch.");
@@ -66,7 +145,7 @@ public class SensorsSimulator {
                             public void run() {
                                 while(continueTouch)
                                 {
-                                    sentMsg(out, "Btn1");
+                                    sentMsg(out, touchPayload);
                                     try {Thread.sleep(100);} catch (InterruptedException ex) {}
                                 }
                             }
@@ -74,7 +153,7 @@ public class SensorsSimulator {
                     }
                     else if(item.equals("One tch"))
                     {
-                        sentMsg(out, "Btn1");
+                        sentMsg(out, touchPayload);
                     }
                     else
                     {
@@ -82,7 +161,7 @@ public class SensorsSimulator {
                     }
 
                     System.out.println(item);
-               }
+                }
             }
         });
         
