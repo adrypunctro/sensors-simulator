@@ -5,9 +5,9 @@
  */
 package sensors.simulator;
 
+import System.TCPClient;
+import System.TCPServer;
 import gui.SimulatorFrame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -18,15 +18,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -41,7 +33,7 @@ import org.json.simple.JSONObject;
 public class SensorsSimulator {
 
     static boolean appConnected = false;
-    static BufferedWriter out = null;
+    static BufferedWriter outBuff = null;
     static SimulatorFrame gui = new SimulatorFrame();
     
     /**
@@ -97,7 +89,7 @@ public class SensorsSimulator {
                                 JSONObject dataObj = new JSONObject();
                                 dataObj.put("rawData", strBuff);
                             jsonObj.put("data", dataObj);
-                            sentMsg(out, jsonObj.toJSONString());
+                            sentMsg(outBuff, jsonObj.toJSONString());
                             jsonObj.clear();
                             
                             // Update GUI
@@ -145,7 +137,7 @@ public class SensorsSimulator {
                             public void run() {
                                 while(continueTouch)
                                 {
-                                    sentMsg(out, touchPayload);
+                                    sentMsg(outBuff, touchPayload);
                                     try {Thread.sleep(100);} catch (InterruptedException ex) {}
                                 }
                             }
@@ -153,7 +145,7 @@ public class SensorsSimulator {
                     }
                     else if(item.equals("One tch"))
                     {
-                        sentMsg(out, touchPayload);
+                        sentMsg(outBuff, touchPayload);
                     }
                     else
                     {
@@ -167,41 +159,35 @@ public class SensorsSimulator {
         
         appConnected=false;
         gui.setSystemPanelApplicationValue("OFFLINE");
-        new Thread()
-        {
-            @Override
-            public void run()
-            {
-                while(true)
-                {
-                    System.out.println("Try to start signals stream...");
-                    try
-                    {
-                        Socket s = new Socket("localhost", 60010);
-                        out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-                        System.out.println("Connected to signals stream.");
-                        break;
-                    }
-                    catch (UnknownHostException e) {
-
-                    } catch (IOException e) {
- 
-                    }
-                    
-                    try {Thread.sleep(1000);} catch (InterruptedException ex) {}
-                }
-            }
-        }.start();
+        TCPServer serv = new TCPServer();
+        serv.setCallback((BufferedWriter out) -> {
+            outBuff = out;
+            System.out.println("Connected to signals stream.");
+        });
+        serv.setConfig("localhost", 60010);
+        serv.setName("SensorsSimulator-SIG");
+        serv.connect();
         
         // Connect to log source
-        reconnect();
+        TCPClient cli = new TCPClient();
+        cli.setCallback((BufferedReader in) -> {
+            appConnected=true;
+            gui.setSystemPanelApplicationValue("ONLINE");
+            String line = null;
+            while ((line = in.readLine()) != null)
+            {
+                gui.addLog(line);
+            }
+        });
+        cli.setConfig("localhost", 60011);
+        cli.setName("SensorsSimulator-LOG");
+        cli.connect();
     }
     
     private static void sentMsg(BufferedWriter out, String msg)
     {
         System.out.println("sentMsg("+msg+")");
-        if (!appConnected)
-        {
+        if (!appConnected) {
             return;
         }
         
@@ -216,56 +202,7 @@ public class SensorsSimulator {
             // Conection lost
             appConnected=false;
             gui.setSystemPanelApplicationValue("OFFLINE");
-            System.out.println("Conection lost!");
-            reconnect();
         }
     }
     
-    private static void reconnect()
-    {
-        while(!appConnected)
-        {
-            System.out.println("Try to connect to LOG stream...");
-            ServerSocket ss;
-            try
-            {
-                ss = new ServerSocket(60011);
-                Socket s = ss.accept();
-                appConnected=true;
-                gui.setSystemPanelApplicationValue("ONLINE");
-                BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                System.out.println("Connected to LOG stream.");
-                
-                new Thread()
-                {
-                    @Override
-                    public void run()
-                    {
-                        String line = null;
-                        try
-                        {
-                            while ((line = in.readLine()) != null)
-                            {
-                                gui.addLog(line);
-                            }
-                        }
-                        catch (IOException ex)
-                        {
-                            appConnected=false;
-                            gui.setSystemPanelApplicationValue("OFFLINE");
-                            System.out.println("Conection lost!");
-                            reconnect();
-                        }
-                
-                    }
-                }.start();
-                
-            }
-            catch (IOException e) {
-                
-            }
- 
-            try {Thread.sleep(1000);} catch (InterruptedException ex) {}
-        }
-    }
 }
