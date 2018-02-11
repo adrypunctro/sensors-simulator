@@ -5,8 +5,7 @@
  */
 package sensors.simulator;
 
-import System.TCPClient;
-import System.TCPServer;
+import System.TCPManager;
 import gui.SimulatorFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +34,8 @@ public class SensorsSimulator {
     static boolean appConnected = false;
     static BufferedWriter outBuff = null;
     static SimulatorFrame gui = new SimulatorFrame();
+    static TCPManager serv = null;
+    static TCPManager cli = null;
     
     /**
      * @param args the command line arguments
@@ -89,7 +90,7 @@ public class SensorsSimulator {
                                 JSONObject dataObj = new JSONObject();
                                 dataObj.put("rawData", strBuff);
                             jsonObj.put("data", dataObj);
-                            sentMsg(outBuff, jsonObj.toJSONString());
+                            sentMsg(jsonObj.toJSONString());
                             jsonObj.clear();
                             
                             // Update GUI
@@ -137,7 +138,7 @@ public class SensorsSimulator {
                             public void run() {
                                 while(continueTouch)
                                 {
-                                    sentMsg(outBuff, touchPayload);
+                                    sentMsg(touchPayload);
                                     try {Thread.sleep(100);} catch (InterruptedException ex) {}
                                 }
                             }
@@ -145,7 +146,7 @@ public class SensorsSimulator {
                     }
                     else if(item.equals("One tch"))
                     {
-                        sentMsg(outBuff, touchPayload);
+                        sentMsg(touchPayload);
                     }
                     else
                     {
@@ -157,52 +158,47 @@ public class SensorsSimulator {
             }
         });
         
-        appConnected=false;
-        gui.setSystemPanelApplicationValue("OFFLINE");
-        TCPServer serv = new TCPServer();
-        serv.setCallback((BufferedWriter out) -> {
-            outBuff = out;
-            System.out.println("Connected to signals stream.");
-        });
+        serv = new TCPManager(TCPManager.SERVER);
         serv.setConfig("localhost", 60010);
         serv.setName("SensorsSimulator-SIG");
-        serv.connect();
+        serv.asyncConnect();
         
-        // Connect to log source
-        TCPClient cli = new TCPClient();
-        cli.setCallback((BufferedReader in) -> {
-            appConnected=true;
-            gui.setSystemPanelApplicationValue("ONLINE");
-            String line = null;
-            while ((line = in.readLine()) != null)
-            {
-                gui.addLog(line);
+        appConnected=false;
+        gui.setSystemPanelApplicationValue("OFFLINE");
+        cli = new TCPManager(TCPManager.CLIENT);
+        cli.setCallback((boolean connected) -> {
+            appConnected=connected;
+            if (connected) {
+                gui.setSystemPanelApplicationValue("ONLINE");
+            }
+            else {
+                gui.setSystemPanelApplicationValue("OFFLINE");
             }
         });
-        cli.setConfig("localhost", 60011);
-        cli.setName("SensorsSimulator-LOG");
-        cli.connect();
+        cli.setConfig("localhost", 60020);
+        cli.setName("SensorsSimulator-LOGs");
+        cli.asyncConnect();
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                while(true)
+                {
+                    String msg = cli.readMessage();
+                    if (msg != null)
+                    {
+                        gui.addLog(msg);
+                    }
+                }
+            }
+        }.start();
     }
     
-    private static void sentMsg(BufferedWriter out, String msg)
+    private static void sentMsg(String msg)
     {
         System.out.println("sentMsg("+msg+")");
-        if (!appConnected) {
-            return;
-        }
-        
-        try
-        {
-            out.write(msg);
-            out.newLine();
-            out.flush();
-        }
-        catch (IOException ex)
-        {
-            // Conection lost
-            appConnected=false;
-            gui.setSystemPanelApplicationValue("OFFLINE");
-        }
+        boolean sent = serv.writeMessage(msg);
     }
     
 }
