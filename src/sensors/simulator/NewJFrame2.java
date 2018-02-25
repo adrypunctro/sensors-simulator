@@ -82,7 +82,6 @@ public class NewJFrame2 extends javax.swing.JFrame {
         jCheckBox10 = new javax.swing.JCheckBox();
         batteryPanelOnChargingCheckbox = new javax.swing.JCheckBox();
         jLabel36 = new javax.swing.JLabel();
-        jButton11 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         robotStatusWiew1 = new javax.swing.JPanel();
         robotStatusWiewCamera = new javax.swing.JPanel();
@@ -123,7 +122,6 @@ public class NewJFrame2 extends javax.swing.JFrame {
         robotStatusWiewSelect2 = new javax.swing.JComboBox<>();
         robotStatusWiewSelect1 = new javax.swing.JComboBox<>();
         jPanel10 = new javax.swing.JPanel();
-        RunBtn = new javax.swing.JButton();
         SimulatedSensorsBtn = new javax.swing.JButton();
         RealSensorsBtn = new javax.swing.JButton();
 
@@ -604,21 +602,10 @@ public class NewJFrame2 extends javax.swing.JFrame {
         jLabel36.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel36.setText("Sensor Simulator");
 
-        jButton11.setText("Hide");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout sensorSimulatorPanelLayout = new javax.swing.GroupLayout(sensorSimulatorPanel);
         sensorSimulatorPanel.setLayout(sensorSimulatorPanelLayout);
         sensorSimulatorPanelLayout.setHorizontalGroup(
             sensorSimulatorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sensorSimulatorPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton11)
-                .addGap(265, 265, 265))
             .addGroup(sensorSimulatorPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(sensorSimulatorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -645,9 +632,7 @@ public class NewJFrame2 extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sensorSimulatorPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton11)
-                .addGap(31, 31, 31)
+                .addGap(69, 69, 69)
                 .addComponent(cameraPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addGroup(sensorSimulatorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1054,30 +1039,26 @@ public class NewJFrame2 extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        RunBtn.setText("Run");
+        SimulatedSensorsBtn.setBackground(new java.awt.Color(0, 102, 102));
+        SimulatedSensorsBtn.setText("Normal mode");
 
-        SimulatedSensorsBtn.setText("Simulated sensors");
-
-        RealSensorsBtn.setText("Real sensors");
+        RealSensorsBtn.setText("Debug mode");
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(546, Short.MAX_VALUE)
                 .addComponent(RealSensorsBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SimulatedSensorsBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(RunBtn)
-                .addGap(408, 408, 408))
+                .addGap(466, 466, 466))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(RunBtn)
                     .addComponent(SimulatedSensorsBtn)
                     .addComponent(RealSensorsBtn))
                 .addGap(0, 12, Short.MAX_VALUE))
@@ -1133,17 +1114,12 @@ public class NewJFrame2 extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cameraPanelUploadImageBtnActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton11ActionPerformed
-
     private void cameraPanelUploadVideoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cameraPanelUploadVideoBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cameraPanelUploadVideoBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton RealSensorsBtn;
-    private javax.swing.JButton RunBtn;
     private javax.swing.JButton SimulatedSensorsBtn;
     private javax.swing.JPanel batteryLevelPanel;
     private javax.swing.JLabel batteryLevelPanelChargingLabel;
@@ -1164,7 +1140,6 @@ public class NewJFrame2 extends javax.swing.JFrame {
     private javax.swing.JButton cameraPanelUploadImageBtn;
     private javax.swing.JButton cameraPanelUploadVideoBtn;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton8;

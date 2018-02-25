@@ -6,24 +6,36 @@
 package sensors.simulator;
 
 import System.TCPManager;
+import System.VA_DEBUG;
 import gui.SimulatorFrame;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -77,12 +89,14 @@ public class SensorsSimulator {
                         if(type.equals("image"))
                         {
                             BufferedImage imagebuff = ImageIO.read(fileToBeSent);
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            ImageIO.write( imagebuff, "jpg", baos );
-                            baos.flush();
-                            byte[] imageInByte = baos.toByteArray();
-                            baos.close();
-                            String strBuff = new String(imageInByte, StandardCharsets.UTF_8);
+                            //ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            //ImageIO.write( imagebuff, "jpg", baos );
+                            //baos.flush();
+                            //byte[] imageInByte = baos.toByteArray();
+                            //baos.close();
+                            //String strBuff = new String(imageInByte, StandardCharsets.UTF_8);
+                            
+                            String strBuff = TCPManager.encodeToString(imagebuff, "jpg");
                             
                             // Send to app
                             JSONObject jsonObj = new JSONObject();
@@ -94,9 +108,7 @@ public class SensorsSimulator {
                             jsonObj.clear();
                             
                             // Update GUI
-                            JLabel label = new JLabel(new ImageIcon(imagebuff));
-                            gui.getCameraPanelRealCapture().add(label);
-                            gui.getCameraPanelRealCapture().repaint();
+                            gui.getCameraPanelRealCapture().changePic(imagebuff);
                         }
                         else 
                         {
@@ -186,14 +198,56 @@ public class SensorsSimulator {
                 while(true)
                 {
                     String msg = cli.readMessage();
-                    if (msg != null)
+                    //System.out.println("readed: "+readBuff);
+                    VA_DEBUG.INFO("[Debug Programm]Received="+msg, true, 1);
+                    //String[] list = readBuff.split("##");
+                    //for (String msg : list)
                     {
-                        gui.addLog(msg);
+                        if (msg != null && !msg.isEmpty())
+                        {
+                            TCPManager.Packet packet = TCPManager.unpack(msg);
+                            VA_DEBUG.INFO("[Debug Programm] ("+packet.appId+","+packet.name+")", true, 1);
+                            switch(packet.appId)
+                            {
+                                case 1:
+                                {
+                                    String dbgprint = (String)packet.data.get("value");
+                                    if (dbgprint.length()>300)
+                                    {
+                                        dbgprint = dbgprint.substring(0, 300)+"...("+dbgprint.length()+")";
+                                    }
+                                    gui.addLog(dbgprint);
+                                    break;
+                                }
+                                case 20:
+                                {
+                                    String imageStr = (String)packet.data.get("value");
+                                    BufferedImage imagebuff = TCPManager.decodeToImage(imageStr);
+                                    gui.getRobotStatusWiewCamera().changePic(imagebuff);
+                                    break;
+                                }
+                                case 30:
+                                {
+                                    String imageStr = (String)packet.data.get("image");
+                                    BufferedImage imagebuff = TCPManager.decodeToImage(imageStr);
+                                    String firstname = (String)packet.data.get("firstname");
+                                    String lastname = (String)packet.data.get("lastname");
+                                    gui.getRobotStatusWiewPersonIdentityImage().changePic(imagebuff);
+                                    gui.setRobotStatusWiewPersonIdentityFirstnameValue(firstname);
+                                    gui.setRobotStatusWiewPersonIdentityNameValue(lastname);
+                                    break;
+                                }
+                            }
+                        }   
                     }
                 }
             }
         }.start();
     }
+    
+    
+    
+    
     
     private static void sentMsg(String msg)
     {

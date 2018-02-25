@@ -63,9 +63,29 @@ public class SimulatorFrame extends javax.swing.JFrame {
         cameraPanelFilenameText.setText(text);
     }
     
-    public JPanel getCameraPanelRealCapture()
+    public ImagePanel getCameraPanelRealCapture()
     {
         return cameraPanelRealCapture;
+    }
+    
+    public ImagePanel getRobotStatusWiewCamera()
+    {
+        return robotStatusWiewCamera;
+    }
+    
+    public ImagePanel getRobotStatusWiewPersonIdentityImage()
+    {
+        return robotStatusWiewPersonIdentityImage;
+    }
+    
+    public void setRobotStatusWiewPersonIdentityFirstnameValue(String val)
+    {
+        robotStatusWiewPersonIdentityFirstnameValue.setText(val);
+    }
+    
+    public void setRobotStatusWiewPersonIdentityNameValue(String val)
+    {
+        robotStatusWiewPersonIdentityNameValue.setText(val);
     }
     
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -84,54 +104,6 @@ public class SimulatorFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }                                         
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }                                         
-
-    private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }
-    
     public void addLog(String msg)
     {
         String currentText = errorLog.getText();
@@ -176,7 +148,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
         cameraPanelUploadImageBtn = new javax.swing.JButton();
         cameraPanelFilenamePanel = new javax.swing.JPanel();
         cameraPanelFilenameText = new javax.swing.JLabel();
-        cameraPanelRealCapture = new javax.swing.JPanel();
+        cameraPanelRealCapture = new ImagePanel(100, 100);
         cameraPanelUploadVideoBtn = new javax.swing.JButton();
         micPanel1 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
@@ -208,10 +180,9 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jCheckBox10 = new javax.swing.JCheckBox();
         batteryPanelOnChargingCheckbox = new javax.swing.JCheckBox();
         jLabel36 = new javax.swing.JLabel();
-        jButton11 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         robotStatusWiew1 = new javax.swing.JPanel();
-        robotStatusWiewCamera = new javax.swing.JPanel();
+        robotStatusWiewCamera = new ImagePanel(200, 200);
         robotStatusPanel = new javax.swing.JLabel();
         robotStatusWiew5 = new javax.swing.JPanel();
         usagePanel = new javax.swing.JPanel();
@@ -237,7 +208,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
         robotStatusWiewSelect5 = new javax.swing.JComboBox<>();
         robotStatusWiew2 = new javax.swing.JPanel();
         robotStatusWiewPersonIdentity = new javax.swing.JPanel();
-        robotStatusWiewPersonIdentityImage = new javax.swing.JPanel();
+        robotStatusWiewPersonIdentityImage = new ImagePanel(100, 100);
         robotStatusWiewPersonIdentityNameLabel = new javax.swing.JLabel();
         robotStatusWiewPersonIdentityNameValue = new javax.swing.JLabel();
         robotStatusWiewPersonIdentityFirstnameLabel = new javax.swing.JLabel();
@@ -249,7 +220,6 @@ public class SimulatorFrame extends javax.swing.JFrame {
         robotStatusWiewSelect2 = new javax.swing.JComboBox<>();
         robotStatusWiewSelect1 = new javax.swing.JComboBox<>();
         jPanel10 = new javax.swing.JPanel();
-        RunBtn = new javax.swing.JButton();
         SimulatedSensorsBtn = new javax.swing.JButton();
         RealSensorsBtn = new javax.swing.JButton();
 
@@ -379,8 +349,6 @@ public class SimulatorFrame extends javax.swing.JFrame {
             cameraPanelFilenamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(cameraPanelFilenameText, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
         );
-
-        cameraPanelRealCapture.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout cameraPanelRealCaptureLayout = new javax.swing.GroupLayout(cameraPanelRealCapture);
         cameraPanelRealCapture.setLayout(cameraPanelRealCaptureLayout);
@@ -730,21 +698,10 @@ public class SimulatorFrame extends javax.swing.JFrame {
         jLabel36.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel36.setText("Sensor Simulator");
 
-        jButton11.setText("Hide");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout sensorSimulatorPanelLayout = new javax.swing.GroupLayout(sensorSimulatorPanel);
         sensorSimulatorPanel.setLayout(sensorSimulatorPanelLayout);
         sensorSimulatorPanelLayout.setHorizontalGroup(
             sensorSimulatorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sensorSimulatorPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton11)
-                .addGap(265, 265, 265))
             .addGroup(sensorSimulatorPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(sensorSimulatorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -771,9 +728,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sensorSimulatorPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton11)
-                .addGap(31, 31, 31)
+                .addGap(69, 69, 69)
                 .addComponent(cameraPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addGroup(sensorSimulatorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -946,7 +901,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
         systemPanelApplicationLabel.setText("APPLICATION:");
 
         systemPanelApplicationValue.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        systemPanelApplicationValue.setForeground(Color.RED);
+        systemPanelApplicationValue.setForeground(new java.awt.Color(204, 0, 0));
         systemPanelApplicationValue.setText("OFFLINE");
 
         systemPanelStateLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1180,30 +1135,26 @@ public class SimulatorFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        RunBtn.setText("Run");
+        SimulatedSensorsBtn.setBackground(new java.awt.Color(0, 102, 102));
+        SimulatedSensorsBtn.setText("Normal mode");
 
-        SimulatedSensorsBtn.setText("Simulated sensors");
-
-        RealSensorsBtn.setText("Real sensors");
+        RealSensorsBtn.setText("Debug mode");
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(546, Short.MAX_VALUE)
                 .addComponent(RealSensorsBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(SimulatedSensorsBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(RunBtn)
-                .addGap(408, 408, 408))
+                .addGap(466, 466, 466))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(RunBtn)
                     .addComponent(SimulatedSensorsBtn)
                     .addComponent(RealSensorsBtn))
                 .addGap(0, 12, Short.MAX_VALUE))
@@ -1233,7 +1184,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>      
+    }// </editor-fold>        
     
     private void batteryPanelOnChargingCheckboxActionPerformed(java.awt.event.ActionEvent evt) {                                                               
         // TODO add your handling code here:
@@ -1250,7 +1201,6 @@ public class SimulatorFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify     
     private final javax.swing.JTextArea errorLog = new javax.swing.JTextArea(30,30);
     private javax.swing.JButton RealSensorsBtn;
-    private javax.swing.JButton RunBtn;
     private javax.swing.JButton SimulatedSensorsBtn;
     private javax.swing.JPanel batteryLevelPanel;
     private javax.swing.JLabel batteryLevelPanelChargingLabel;
@@ -1265,7 +1215,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
     private javax.swing.JPanel cameraPanel;
     private javax.swing.JPanel cameraPanelFilenamePanel;
     private javax.swing.JLabel cameraPanelFilenameText;
-    private javax.swing.JPanel cameraPanelRealCapture;
+    private ImagePanel cameraPanelRealCapture;
     private javax.swing.JCheckBox cameraPanelRealCheckbox;
     private javax.swing.JLabel cameraPanelTitle;
     private javax.swing.JButton cameraPanelUploadImageBtn;
@@ -1310,7 +1260,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
     private javax.swing.JPanel robotStatusWiew1;
     private javax.swing.JPanel robotStatusWiew2;
     private javax.swing.JPanel robotStatusWiew5;
-    private javax.swing.JPanel robotStatusWiewCamera;
+    private ImagePanel robotStatusWiewCamera;
     private javax.swing.JPanel robotStatusWiewPersonIdentity;
     private javax.swing.JLabel robotStatusWiewPersonIdentityAgeLabel;
     private javax.swing.JLabel robotStatusWiewPersonIdentityAgeValue;
@@ -1318,7 +1268,7 @@ public class SimulatorFrame extends javax.swing.JFrame {
     private javax.swing.JLabel robotStatusWiewPersonIdentityBornValue;
     private javax.swing.JLabel robotStatusWiewPersonIdentityFirstnameLabel;
     private javax.swing.JLabel robotStatusWiewPersonIdentityFirstnameValue;
-    private javax.swing.JPanel robotStatusWiewPersonIdentityImage;
+    private ImagePanel robotStatusWiewPersonIdentityImage;
     private javax.swing.JLabel robotStatusWiewPersonIdentityNameLabel;
     private javax.swing.JLabel robotStatusWiewPersonIdentityNameValue;
     private javax.swing.JComboBox<String> robotStatusWiewSelect1;
